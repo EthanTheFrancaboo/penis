@@ -1,0 +1,47 @@
+import discord
+import random
+import aiohttp
+
+TOKEN = 'TOKEN HERE'
+CHANNEL_ID = putidhere  # Replace with the desired channel ID
+OTHER_CHANNEL_MESSAGE = [
+    "response",
+    "response!",
+    "response",
+    "response",
+    "response"
+]
+
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'Logged in as {client.user.name}')
+    channel = client.get_channel(CHANNEL_ID)
+    await client.change_presence(activity=discord.Game(name='status here'))
+
+@client.event
+async def on_message(message):
+    if message.channel.id == CHANNEL_ID:
+        if f'<@{client.user.id}>' in message.content:
+            response = await get_random_line()
+            await message.channel.send(response)
+    elif message.channel.id == specific channel id here:
+        await message.channel.send("specific channel response here")
+    elif message.channel.id != CHANNEL_ID and f'<@{client.user.id}>' in message.content:
+        response = random.choice(OTHER_CHANNEL_MESSAGE)
+        await message.channel.send(response)
+
+async def get_random_line():
+    url = 'desired url to pull from'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            lines = await response.text()
+            lines = lines.split('\n')
+            return random.choice(lines)
+
+client.run(TOKEN)
